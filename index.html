@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="mobile-web-app-capable" content="yes">
+
+        <link rel="icon" sizes="120x120" href="/apple-touch-icon-120x120.png">
+        <link rel="apple-touch-icon" href="/apple-touch-icon-120x120.png"/>
+        <link rel="apple-touch-icon-precomposed" href="/apple-touch-icon-120x120.png"/>
+
+        <link rel="stylesheet" href="main.css">
+        <link rel="manifest" href="/manifest.json">
+        <title>Pie Match</title>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.4/js/all.js"></script>
+        <script src="https://hammerjs.github.io/dist/hammer.min.js"></script>
+    </head>
+
+    <body>
+        <script src="/main.js"></script>
+
+        <div class='secret-pi'><img src="/pi.png"/></div>
+        <div class='top-arrow right'><i class='fa fa-arrow-circle-right fa-9x' style='color:green'></i></div>
+        <div class='top-arrow left'><i class='fa fa-arrow-circle-left fa-9x' style='color:red'></i></div>
+        <h1 class="loading">Loading   <i class="fas fa-sync fa-spin"></i></h1>
+
+        <!-- div for the intro screen -->
+        <div class='intro'>
+            <h1 class='top-title'>Welcome to Pie Match!</h1>
+            <div class='right'><span>Swipe right if you like</span> <i class="fas fa-arrow-circle-right fa-3x" style='color:green'></i></div>
+            <div class='pie-pic'><img src='/pumpkin-pie-slice.png'/></div>
+            <div class='left'><i class="fas fa-arrow-circle-left fa-3x" style='color:red'></i> <span>Or swipe left</span></div>
+            <h1 class='bottom-title'>Tap to begin</h1>
+        </div>
+
+        <!-- div to contain the main swipe app -->
+        <div class="main-content">
+            <div class='banner'>
+                <i class='fas fa-arrow-circle-left fa-2x left'></i>
+                <i class='fas fa-arrow-circle-right fa-2x right'></i>
+            </div>
+            <div class="pie-image-wrapper">
+                <img class="pie-image"/>
+            </div>
+            <div class="swipe-message">
+                <div class="like"><span class="like-count"></span> like</div>
+                <div class="dont-like"><span class="dont-like-count"></span> don't like</div>
+                <div class="ratio"><span class="ratio-num"></span> like ratio</div>
+            </div>
+            <span class="pie-info"></span>
+        </div>
+
+        <!-- div for the computing page -->
+        <div class="computing-content">
+            <h1>Computing match</h1>
+            <h1><i class='fas fa-sync fa-spin fa-4x'></i></h1>
+        </div>
+
+        <!-- div for finish -->
+        <div class="finish-content">
+            <h1>Your match</h1>
+            <img src=""/>
+        </div>
+    </body>
+</html>

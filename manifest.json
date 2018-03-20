@@ -1,0 +1,29 @@
+{
+  "short_name": "Pie Match",
+  "name": "Pie Match",
+  "start_url": "/index.html",
+  "display": "fullscreen",
+  "description": "a fun app for pi day",
+  "icons": [{
+    "src": "/apple-touch-icon-120x120.png",
+    "sizes": "120x120",
+    "type": "image/png"
+  }, {
+    "src": "/icon-128x128.png",
+    "sizes": "128x128",
+    "type": "image/png"
+  }, {
+    "src": "/icon-144x144.png",
+    "sizes": "144x144",
+    "type": "image/png"
+  }, {
+    "src": "/icon-152x152.png",
+    "sizes": "152x152",
+    "type": "image/png"
+  }, {
+    "src": "/icon-192x192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  }],
+  "orientation": "portrait"
+}
