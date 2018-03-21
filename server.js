@@ -208,6 +208,6 @@ server.listen(port, '0.0.0.0', () => {
 })
 
 MongoClient.connect(dbURI, (err, dbFromURL) => {
-    console.log(`Connected successfully to mongo`);
+    console.log(`Connected successfully to mongo ${dbURI}`);
     db = dbFromURL
 });
