@@ -7,9 +7,9 @@ const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const server = require('http').createServer(app)
 const mongodb = require('mongodb')
-const dbName = 'pie-swipe'
-const defaultDBConnection = `mongodb://localhost/${dbName}`
+const defaultDBConnection = `mongodb://localhost/pie-swipe`
 const dbURI = process.env.MONGODB_URI || defaultDBConnection
+const dbName = dbURI.substr(dbURI.lastIndexOf('/')+1) // dumb
 console.log(`dbURI ${dbURI}`)
 const MongoClient = require('mongodb').MongoClient;
 const cookieName = 'pieSwipeID'
@@ -207,7 +207,8 @@ server.listen(port, '0.0.0.0', () => {
     console.log(`listening on ${port}`)
 })
 
-MongoClient.connect(dbURI, (err, dbFromURL) => {
+MongoClient.connect(dbURI, (err, client) => {
+    // this is really dumb
     console.log(`Connected successfully to mongo ${dbURI}`);
-    db = dbFromURL
+    db = client.db(dbName)
 });
