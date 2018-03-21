@@ -1,14 +1,17 @@
-var onLoadFunction = function () {
+var onLoadFunction = function() {
     // customizations
-    var googleImageSearch = 'pie';
-    var welcomeMessage = 'Welcome to Pie Match!!';
+    var appName = 'pie-swipe'
+    var googleImageSearch = 'cherry pie';
+    var welcomeMessage = 'Welcome to Pie Match!';
     var welcomeImageURL = '/pumpkin-pie-slice.png';
+
+    const databaseAPIURL = 'https://pie-swipe.herokuapp.com/swipe'
 
     var arrowTime = 1000;
     var computeTime = 3000;
     var likeCount = 0;
     var dontLikeCount = 0;
-     
+
     var xDown = null;
     var yDown = null;
     var pieResultsJSON = null;
@@ -35,6 +38,22 @@ var onLoadFunction = function () {
     var topTitleElm = null;
     var introPicElm = null;
 
+    function fetchStats(url) {
+        // "http://localhost:5000/swipe?url=xyz&appName=pie"
+        return fetch(`${databaseAPIURL}?url=${url}&appName=${appName}`, {
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(stats => {
+                return stats
+            })
+            .catch(err => {
+                console.log('error fetching stats', err)
+            })
+    }
+
     function nextPieImage() {
         if (pieImageIndex < pieResultsJSON.items.length - 1) {
             pieImageIndex++;
@@ -47,9 +66,11 @@ var onLoadFunction = function () {
             pieImageElm.classList.add('pie-image');
             pieWrapperElm.appendChild(pieImageElm);
             pieImageElm.src = pieResultsJSON.items[pieImageIndex].link;
+            updateSwipeCount()
             // pieInfoElm.innerHTML = pieResultsJSON.items[pieImageIndex].title;
             // console.log('NOW SHOWING', pieResultsJSON.items[pieImageIndex]);
-        } else {
+        }
+        else {
             googImageStart += imagesPerRequest;
             loadPies()
         }
@@ -66,15 +87,70 @@ var onLoadFunction = function () {
     }
 
     function updateSwipeCount() {
+        if (pieResultsJSON) {
+            fetchStats(pieResultsJSON.items[pieImageIndex].link, {
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(s => {
+                    return s.json()
+                })
+                .then(stats => {
+                    console.log('got stats', stats)
+
+                    likeCountElm.innerHTML = `${stats.totalUp}`
+                    dontLikeCountElm.innerHTML = `${stats.totalDown}`
+                })
+        }
+        /*
+            
         likeCountElm.innerHTML = `${likeCount}`
         dontLikeCountElm.innerHTML = `${dontLikeCount}`
-        ratioElm.innerHTML = `${(likeCount/dontLikeCount).toFixed(2)}`
-        console.log(`${(likeCount/dontLikeCount).toFixed(2)}`)
+        var pct = (likeCount*100 / (dontLikeCount + likeCount)).toFixed(2)
+        if(likeCount+dontLikeCount>0){
+            if(dontLikeCount>0){
+                ratioElm.innerHTML = `${pct}%  ${(likeCount/dontLikeCount).toFixed(2)}`+" like ratio"
+            }else{
+                ratioElm.innerHTML = `Everybody likes this!`
+            }
+            console.log(`${(likeCount/dontLikeCount).toFixed(2)}`)
+        }else{
+            console.log('No one has seen this pie image yet.')
+            ratioElm.innerHTML = `---`
+        }
+        */
         if (`${(likeCount/dontLikeCount).toFixed(2)}`.startsWith('3.1')) {
             secretPiElm.style.display = 'block'
-        } else {
+        }
+        else {
             secretPiElm.style.display = 'none'
         }
+
+    }
+
+    function sendVote(url, vote) {
+        const postBody = {
+            appName: appName,
+            url: url,
+            vote: vote
+        }
+
+        fetch(databaseAPIURL, {
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST',
+                body: JSON.stringify(postBody)
+            })
+            .then(r => {
+                console.log('vote response', r)
+            }).catch(err => {
+                console.log('error', err)
+            })
+
     }
 
     function handleRightSwipe() {
@@ -85,8 +161,10 @@ var onLoadFunction = function () {
             topRightArrowElm.style.opacity = 0.0;
         }, arrowTime)
         likeCount++;
-        updateSwipeCount();
+
         nextPieImage();
+
+        sendVote(pieResultsJSON.items[pieImageIndex].link, 1)
     }
 
     function handleLeftSwipe() {
@@ -97,8 +175,10 @@ var onLoadFunction = function () {
             topLeftArrowElm.style.opacity = 0.0;
         }, arrowTime)
         dontLikeCount++;
-        updateSwipeCount();
+
         nextPieImage();
+
+        sendVote(pieResultsJSON.items[pieImageIndex].link, -1)
     }
 
     function loadPies() {
@@ -108,10 +188,10 @@ var onLoadFunction = function () {
         var query = encodeURIComponent(googleImageSearch);
 
         fetch(`https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${searchEngineID}&searchType=image&q=${query}&num=${imagesPerRequest}&safe=medium&start=${googImageStart}`)
-            .then(function (pieResults) {
+            .then(function(pieResults) {
                 return pieResults.json();
             })
-            .then(function (pieJSON) {
+            .then(function(pieJSON) {
                 console.log('pieJSON', pieJSON);
                 if (!pieJSON.error) {
                     pieResultsJSON = pieJSON;
@@ -125,7 +205,7 @@ var onLoadFunction = function () {
             .catch(function(err) {
                 console.log('error in search', err)
             })
-            updateSwipeCount();
+
     }
 
     function handlePieTouch(ev) {
@@ -155,7 +235,7 @@ var onLoadFunction = function () {
     secretPiElm = document.querySelector('.secret-pi');
     topTitleElm = document.querySelector('.intro .top-title');
     introPicElm = document.querySelector('.intro .pie-pic img');
-    
+
     topTitleElm.innerHTML = welcomeMessage;
     introPicElm.src = welcomeImageURL;
 
