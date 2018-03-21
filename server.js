@@ -9,7 +9,7 @@ const server = require('http').createServer(app)
 const mongodb = require('mongodb')
 const defaultDBConnection = `mongodb://localhost/pie-swipe`
 const dbURI = process.env.MONGODB_URI || defaultDBConnection
-const dbName = dbURI.substr(dbURI.lastIndexOf('/')+1) // dumb
+const dbName = dbURI.substr(dbURI.lastIndexOf('/') + 1) // dumb
 console.log(`dbURI ${dbURI}`)
 const MongoClient = require('mongodb').MongoClient;
 const cookieName = 'pieSwipeID'
@@ -198,8 +198,15 @@ app.post('/swipe', async (req, res, next) => {
     console.log('got userVoteRecord', userVoteRecord)
 
     res.sendStatus(200)
+})
 
-
+app.get('/swipe', async (req, res, next) => {
+    console.log('req.query', req.query)
+    const imageColName = `${req.query.appName}-images`
+    const imageRecord = await db.collection(imageColName).findOne({
+        url: req.query.url
+    })
+    res.json(imageRecord)
 })
 
 
